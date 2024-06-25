@@ -50,7 +50,7 @@ public:
     /// \param yHadronMin minimum hadron rapidity
     /// \param yHadronMax maximum hadron rapidity
     /// \param hadronPdgList list of PDG codes for hadrons to be used in trigger
-    void setupGeneratorEvHF(int genType, float yQuarkMin, float yQuarkMax, float yHadronMin, float yHadronMax, std::vector<int> hadronPdgList = {}) {
+    void setupGeneratorEvHF(int genType, float yQuarkMin, float yQuarkMax, float yHadronMin, float yHadronMax, std::vector<int> hadronPdgList = {}, float ptHardMin = 0., float ptHardMax = -1.) {
         mGeneratorEvHF = nullptr;
         switch (genType)
         {
@@ -78,6 +78,10 @@ public:
             LOG(fatal) << "********** [GeneratorPythia8EmbedHF] bad configuration, fix it! **********";
             break;
         }
+
+        mGeneratorEvHF->readString(Form("PhaseSpace:pTHatMin = %f", ptHardMin));
+        mGeneratorEvHF->readString(Form("PhaseSpace:pTHatMax = %f", ptHardMax));
+
         mGeneratorEvHF->Init();
     }
 
@@ -158,7 +162,7 @@ private:
 };
 
 // Charm enriched
-FairGenerator * GeneratorPythia8EmbedHFCharm(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {})
+FairGenerator * GeneratorPythia8EmbedHFCharm(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {}, float ptHardMin = 0., float ptHardMax = -1.)
 {
     auto myGen = new GeneratorPythia8EmbedHF();
 
@@ -169,7 +173,7 @@ FairGenerator * GeneratorPythia8EmbedHFCharm(float yQuarkMin = -1.5, float yQuar
 }
 
 // Beauty enriched
-FairGenerator * GeneratorPythia8EmbedHFBeauty(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {})
+FairGenerator * GeneratorPythia8EmbedHFBeauty(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {}, float ptHardMin = 0., float ptHardMax = -1.)
 {
     auto myGen = new GeneratorPythia8EmbedHF();
 
@@ -180,7 +184,7 @@ FairGenerator * GeneratorPythia8EmbedHFBeauty(float yQuarkMin = -1.5, float yQua
 }
 
 // Charm and beauty enriched (with same ratio)
-FairGenerator * GeneratorPythia8EmbedHFCharmAndBeauty(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {})
+FairGenerator * GeneratorPythia8EmbedHFCharmAndBeauty(float yQuarkMin = -1.5, float yQuarkMax = 1.5, float yHadronMin = -1.5, float yHadronMax = 1.5, std::vector<int> hadronPdgList = {}, float ptHardMin = 0., float ptHardMax = -1.)
 {
     auto myGen = new GeneratorPythia8EmbedHF();
 
