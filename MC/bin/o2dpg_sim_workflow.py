@@ -163,6 +163,9 @@ parser.add_argument('--fwdmatching-cut-4-param', action='store_true', help='appl
 # Matching training for machine learning
 parser.add_argument('--fwdmatching-save-trainingdata', action='store_true', help='enables saving parameters at plane for matching training with machine learning')
 
+# Matching training for machine learning
+parser.add_argument('--signal-filt', action='store_true', help='enables signal filtering, to be used only for MC with embedding')
+
 args = parser.parse_args()
 print (args)
 
@@ -187,6 +190,10 @@ if (args.include_qc or args.include_local_qc) and QUALITYCONTROL_ROOT is None:
 if args.include_analysis and (QUALITYCONTROL_ROOT is None or O2PHYSICS_ROOT is None):
    print('Error: Argument --include-analysis needs O2PHYSICS_ROOT and QUALITYCONTROL_ROOT loaded')
 #   exit(1)
+
+if args.signal_filt and not args.embedding:
+   print('Error: Argument --signal-filt needs also --embedding enabled')
+   exit(1)
 
 module_name = "o2dpg_analysis_test_workflow"
 spec = importlib.util.spec_from_file_location(module_name, join(O2DPG_ROOT, "MC", "analysis_testing", f"{module_name}.py"))
@@ -1659,6 +1666,7 @@ for tf in range(1, NTIMEFRAMES + 1):
       "--enable-truncation 0" if environ.get("O2DPG_AOD_NOTRUNCATE") or environ.get("ALIEN_JDL_O2DPG_AOD_NOTRUNCATE") else "",
       "--disable-strangeness-tracker" if args.no_strangeness_tracking else "",
       f"--aod-timeframe-id ${{ALIEN_PROC_ID}}{aod_df_id}" if not args.run_anchored else "",
+      "--mc-signal-filt" if args.signal_filt else ""
    ])
    # Consider in future: AODtask['disable_alternative_reco_software'] = True # do not apply reco software here (we prefer latest aod converter)
    workflow['stages'].append(AODtask)
